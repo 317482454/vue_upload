@@ -1,22 +1,30 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
-    <h2>Essential Links</h2>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank">Forum</a></li>
-      <li><a href="https://gitter.im/vuejs/vue" target="_blank">Gitter Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank">Twitter</a></li>
-      <br>
-      <li><a href="http://vuejs-templates.github.io/webpack/" target="_blank">Docs for This Template</a></li>
-    </ul>
-    <h2>Ecosystem</h2>
-    <ul>
-      <li><a href="http://router.vuejs.org/" target="_blank">vue-router</a></li>
-      <li><a href="http://vuex.vuejs.org/" target="_blank">vuex</a></li>
-      <li><a href="http://vue-loader.vuejs.org/" target="_blank">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank">awesome-vue</a></li>
-    </ul>
+    <div class="upload">
+      <div class="upload_warp">
+        <div class="upload_warp_left" @click="fileClick">
+          <img src="./upload.png">
+        </div>
+        <div class="upload_warp_right" @drop="drop($event)" @dragenter="dragenter($event)" @dragover="dragover($event)">
+          或者将文件拖到此处
+        </div>
+      </div>
+      <div class="upload_warp_text">
+        选中{{imgList.length}}张文件，共{{bytesToSize(this.size)}}
+      </div>
+      <input @change="fileChange($event)" type="file" id="upload_file" multiple style="display: none"/>
+      <div class="upload_warp_img" v-show="imgList.length!=0">
+        <div class="upload_warp_img_div" v-for="(item,index) of imgList">
+          <div class="upload_warp_img_div_top">
+            <div class="upload_warp_img_div_text">
+              {{item.file.name}}
+            </div>
+            <img src="./del.png" class="upload_warp_img_div_del" @click="fileDel(index)">
+          </div>
+          <img :src="item.file.src">
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -25,29 +33,164 @@ export default {
   name: 'hello',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      imgList: [],
+      size: 0
+    }
+  },
+  methods: {
+    fileClick(){
+      document.getElementById('upload_file').click()
+    },
+    fileChange(el){
+      if (!el.target.files[0].size) return;
+      this.fileList(el.target.files);
+      el.target.value = ''
+    },
+    fileList(files){
+      for (let i = 0; i < files.length; i++) {
+        this.fileAdd(files[i]);
+      }
+    },
+    fileAdd(file){
+      this.size = this.size + file.size;//总大小
+      let reader = new FileReader();
+      reader.vue = this;
+      reader.readAsDataURL(file);
+      reader.onload = function () {
+        file.src = this.result;
+        this.vue.imgList.push({
+          file
+        });
+      }
+    },
+    fileDel(index){
+      this.size = this.size - this.imgList[index].file.size;//总大小
+      this.imgList.splice(index, 1);
+    },
+    bytesToSize(bytes){
+      if (bytes === 0) return '0 B';
+      let k = 1000, // or 1024
+        sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
+        i = Math.floor(Math.log(bytes) / Math.log(k));
+      return (bytes / Math.pow(k, i)).toPrecision(3) + ' ' + sizes[i];
+    },
+    dragenter(el){
+      el.stopPropagation();
+      el.preventDefault();
+    },
+    dragover(el){
+      el.stopPropagation();
+      el.preventDefault();
+    },
+    drop(el){
+      el.stopPropagation();
+      el.preventDefault();
+      this.fileList(el.dataTransfer.files);
     }
   }
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h1, h2 {
-  font-weight: normal;
-}
+  .upload_warp_img_div_del {
+    position: absolute;
+    top: 6px;
+    width: 16px;
+    right: 4px;
+  }
 
-ul {
-  list-style-type: none;
-  padding: 0;
-}
+  .upload_warp_img_div_top {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 30px;
+    background-color: rgba(0, 0, 0, 0.4);
+    line-height: 30px;
+    text-align: left;
+    color: #fff;
+    font-size: 12px;
+    text-indent: 4px;
+  }
 
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
+  .upload_warp_img_div_text {
+    white-space: nowrap;
+    width: 80%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-a {
-  color: #42b983;
-}
+  .upload_warp_img_div img {
+    max-width: 100%;
+    max-height: 100%;
+    vertical-align: middle;
+  }
+
+  .upload_warp_img_div {
+    position: relative;
+    height: 100px;
+    width: 120px;
+    border: 1px solid #ccc;
+    margin: 0px 30px 10px 0px;
+    float: left;
+    line-height: 100px;
+    display: table-cell;
+    text-align: center;
+    background-color: #eee;
+    cursor: pointer;
+  }
+
+  .upload_warp_img {
+    border-top: 1px solid #D2D2D2;
+    padding: 14px 0 0 14px;
+    overflow: hidden
+  }
+
+  .upload_warp_text {
+    text-align: left;
+    margin-bottom: 10px;
+    padding-top: 10px;
+    text-indent: 14px;
+    border-top: 1px solid #ccc;
+    font-size: 14px;
+  }
+
+  .upload_warp_right {
+    float: left;
+    width: 57%;
+    margin-left: 2%;
+    height: 100%;
+    border: 1px dashed #999;
+    border-radius: 4px;
+    line-height: 130px;
+    color: #999;
+  }
+
+  .upload_warp_left img {
+    margin-top: 32px;
+  }
+
+  .upload_warp_left {
+    float: left;
+    width: 40%;
+    height: 100%;
+    border: 1px dashed #999;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .upload_warp {
+    margin: 14px;
+    height: 130px;
+  }
+
+  .upload {
+    border: 1px solid #ccc;
+    background-color: #fff;
+    width: 650px;
+    box-shadow: 0px 1px 0px #ccc;
+    border-radius: 4px;
+  }
+  .hello{
+    width: 650px;
+    margin-left: 34%;
+  }
 </style>

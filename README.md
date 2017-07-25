@@ -1,6 +1,6 @@
 # vue_upload
 
-> A Vue.js project
+> vue上传demo,支持多选，拖拽上传
 
 ## Build Setup
 
@@ -17,5 +17,5 @@ npm run build
 # build for production and view the bundle analyzer report
 npm run build --report
 ```
+![image](https://github.com/317482454/vue_upload/blob/master/demo.png)
 
-For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
