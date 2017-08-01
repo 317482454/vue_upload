@@ -1,3 +1,4 @@
+[在线DEMO http://jqvue.com/demo/vue_upload/demo.html](http://jqvue.com/demo/vue_upload/demo.html "悬停显示")  
 # vue_upload
 
 > vue上传demo,支持多选，拖拽上传
