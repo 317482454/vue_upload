@@ -83,8 +83,8 @@
         })
       },
       fileAdd(file) {
-        this.limit--;
-        if (this.limit < 0) return;
+        if (this.limit !== undefined) this.limit--;
+        if (this.limit !== undefined && this.limit < 0) return;
         //总大小
         this.size = this.size + file.size;
         //判断是否为图片文件
@@ -108,7 +108,7 @@
       fileDel(index) {
         this.size = this.size - this.imgList[index].file.size;//总大小
         this.imgList.splice(index, 1);
-        this.limit = this.imgList.length;
+        if (this.limit !== undefined) this.limit = this.imgList.length;
       },
       bytesToSize(bytes) {
         if (bytes === 0) return '0 B';
