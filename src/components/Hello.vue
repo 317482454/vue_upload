@@ -34,7 +34,8 @@
     data() {
       return {
         imgList: [],
-        size: 0
+        size: 0,
+        limit: 2,//控制上传数量
       }
     },
     methods: {
@@ -82,9 +83,10 @@
         })
       },
       fileAdd(file) {
+        this.limit--;
+        if (this.limit < 0) return;
         //总大小
         this.size = this.size + file.size;
-
         //判断是否为图片文件
         if (file.type.indexOf('image') == -1) {
           file.src = 'static/wenjian.png';
@@ -106,6 +108,7 @@
       fileDel(index) {
         this.size = this.size - this.imgList[index].file.size;//总大小
         this.imgList.splice(index, 1);
+        this.limit = this.imgList.length;
       },
       bytesToSize(bytes) {
         if (bytes === 0) return '0 B';
