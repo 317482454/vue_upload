@@ -35,7 +35,7 @@
       return {
         imgList: [],
         size: 0,
-        limit: 2,//控制上传数量
+        limit: 2,//控制上传数量，不需要删除该参数即可
       }
     },
     methods: {
