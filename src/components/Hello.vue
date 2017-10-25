@@ -1,5 +1,7 @@
 <template>
   <div class="hello">
+    <button @click="limitClick(1)">点击设置上传数量：2</button>
+    <button @click="limitClick(0)">点击取消上传数量</button>
     <div class="upload">
       <div class="upload_warp">
         <div class="upload_warp_left" @click="fileClick">
@@ -35,10 +37,18 @@
       return {
         imgList: [],
         size: 0,
-        limit: 2,//控制上传数量，不需要删除该参数即可
+
       }
     },
     methods: {
+      //设置
+      limitClick(state) {
+        this.imgList = [];
+        if (state)
+          this.limit = 2;
+        else
+          this.limit = undefined;
+      },
       fileClick() {
         document.getElementById('upload_file').click()
       },
@@ -89,7 +99,7 @@
         this.size = this.size + file.size;
         //判断是否为图片文件
         if (file.type.indexOf('image') == -1) {
-          file.src = 'static/wenjian.png';
+          file.src = 'wenjian.png';
           this.imgList.push({
             file
           });
