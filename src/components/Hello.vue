@@ -105,13 +105,22 @@
           });
         } else {
           let reader = new FileReader();
-          reader.vue = this;
+          let image = new Image();
+          let _this=this;
           reader.readAsDataURL(file);
           reader.onload = function () {
             file.src = this.result;
-            this.vue.imgList.push({
-              file
-            });
+            image.onload=function(){
+              let width = image.width;
+              let height = image.height;
+              file.width=width;
+              file.height=height;
+              _this.imgList.push({
+                file
+              });
+              console.log( _this.imgList);
+            };
+            image.src= file.src;
           }
         }
       },
