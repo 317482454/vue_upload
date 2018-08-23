@@ -2,6 +2,7 @@
   <div class="hello">
     <button @click="limitClick(1)">点击设置上传数量：2</button>
     <button @click="limitClick(0)">点击取消上传数量</button>
+    <div>目前可上传数量限制：<span v-if="!limit">无</span><span v-if="limit">{{limit}}</span></div>
     <div class="upload">
       <div class="upload_warp">
         <div class="upload_warp_left" @click="fileClick">
@@ -16,7 +17,10 @@
       </div>
       <input @change="fileChange($event)" type="file" id="upload_file" multiple style="display: none"/>
       <div class="upload_warp_img" v-show="imgList.length!=0">
-        <div class="upload_warp_img_div" v-for="(item,index) of imgList">
+        <div class="upload_warp_img_div" v-for="(item,index) in imgList"
+             v-dragging="{ item: item, list: imgList, group: 'color' }"
+             :key="index"
+             >
           <div class="upload_warp_img_div_top">
             <div class="upload_warp_img_div_text">
               {{item.file.name}}
@@ -27,6 +31,10 @@
         </div>
       </div>
     </div>
+    <div v-for="(item,index) in imgList" style="text-align: left">
+      {{index}}：{{item.file.name}}
+    </div>
+
   </div>
 </template>
 
@@ -37,7 +45,7 @@
       return {
         imgList: [],
         size: 0,
-
+        limit:undefined,
       }
     },
     methods: {
@@ -254,6 +262,5 @@
 
   .hello {
     width: 650px;
-    margin-left: 34%;
   }
 </style>
